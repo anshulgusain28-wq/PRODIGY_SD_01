@@ -93,6 +93,51 @@ function getFormulaString(valStr, from, to, resStr) {
   return '';
 }
 
+function checkInvalidInput(rawValue) {
+  const s = rawValue.trim();
+  if (s === '') return null;
+
+  // Regex for a clean valid decimal number (including optional leading +/- and scientific notation)
+  const validNumberRegex = /^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?$/;
+  if (validNumberRegex.test(s)) {
+    return null; // It's a valid number, no error
+  }
+
+  const lowerStr = s.toLowerCase();
+
+  // 1. Math operators check (excluding leading +/- or scientific notation e+/-)
+  const hasInnerOperator = lowerStr.split('').some((char, idx) => {
+    return (char === '+' || char === '-') && idx > 0 && lowerStr[idx - 1] !== 'e';
+  });
+
+  const hasMathOperators = /[\*\/÷%\^=]/.test(lowerStr) || /\d\s*[xX]\s*\d/.test(s);
+
+  if (hasInnerOperator || hasMathOperators) {
+    return "I am a thermometer, not a calculator. Please leave the math homework to your school teacher.";
+  }
+
+  // 2. Mathematical words / words that indicate math operations
+  const mathWords = ['plus', 'minus', 'times', 'divided', 'multiply', 'add', 'subtract', 'sum'];
+  const words = lowerStr.split(/\s+/);
+  if (words.some(w => mathWords.includes(w))) {
+    return "Nice try, but I only speak temperatures, not algebra. Keep it simple and enter a single number.";
+  }
+
+  // 3. Conversion words or unit words check
+  const conversionKeywords = ['to', 'into', 'convert', 'equals', 'in'];
+  const unitKeywords = ['celsius', 'fahrenheit', 'kelvin', 'meter', 'feet', 'inch', 'yard', 'mile', 'gram', 'pound', 'kg', 'lbs', 'cm', 'mm', 'km'];
+  
+  const hasConversionWord = words.some(w => conversionKeywords.includes(w));
+  const hasUnitWord = words.some(w => unitKeywords.some(unit => w.includes(unit)));
+
+  if (hasConversionWord || hasUnitWord) {
+    return "I only convert temperatures using the tabs below. Typing full sentences here is beyond my pay grade.";
+  }
+
+  // 4. Default fallback for general invalid strings (like "abc")
+  return "Please enter a valid number. Alphabet soup does not have a boiling point.";
+}
+
 function convert() {
   clearError();
   const rawValue = tempInput.value.trim();
@@ -104,9 +149,19 @@ function convert() {
     return;
   }
 
+  const invalidMsg = checkInvalidInput(rawValue);
+  if (invalidMsg) {
+    showError(invalidMsg);
+    resultVal.textContent = '—';
+    formulaDisplay.textContent = 'Invalid input';
+    return;
+  }
+
   const value = parseFloat(rawValue);
   if (isNaN(value)) {
-    showError('⚠ Please enter a valid number.');
+    showError('Please enter a valid number.');
+    resultVal.textContent = '—';
+    formulaDisplay.textContent = 'Invalid input';
     return;
   }
 
