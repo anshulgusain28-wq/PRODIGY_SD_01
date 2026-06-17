@@ -111,30 +111,32 @@ function checkInvalidInput(rawValue) {
   });
 
   const hasMathOperators = /[\*\/÷%\^=]/.test(lowerStr) || /\d\s*[xX]\s*\d/.test(s);
-
-  if (hasInnerOperator || hasMathOperators) {
-    return "I am a thermometer, not a calculator. Please leave the math homework to your school teacher.";
-  }
-
-  // 2. Mathematical words / words that indicate math operations
   const mathWords = ['plus', 'minus', 'times', 'divided', 'multiply', 'add', 'subtract', 'sum'];
   const words = lowerStr.split(/\s+/);
-  if (words.some(w => mathWords.includes(w))) {
-    return "Nice try, but I only speak temperatures, not algebra. Keep it simple and enter a single number.";
+  const hasMathWord = words.some(w => mathWords.includes(w));
+
+  if (hasInnerOperator || hasMathOperators || hasMathWord) {
+    return "I am a temperature converter, not a calculator. If I wanted to solve equations, I would have gone to math school instead of thermodynamic school.";
   }
 
-  // 3. Conversion words or unit words check
+  // 2. Conversion words or unit words check
   const conversionKeywords = ['to', 'into', 'convert', 'equals', 'in'];
-  const unitKeywords = ['celsius', 'fahrenheit', 'kelvin', 'meter', 'feet', 'inch', 'yard', 'mile', 'gram', 'pound', 'kg', 'lbs', 'cm', 'mm', 'km'];
+  const unitKeywords = [
+    'celsius', 'fahrenheit', 'kelvin', 
+    'meter', 'meters', 'feet', 'inch', 'inches', 'yard', 'yards', 'mile', 'miles', 'cm', 'mm', 'km',
+    'gram', 'grams', 'pound', 'pounds', 'kg', 'lbs', 'ounces', 'oz',
+    'liter', 'liters', 'gallon', 'gallons', 'ml',
+    'usd', 'eur', 'gbp', 'jpy', 'inr', 'cad', 'aud', 'rupee', 'rupees', 'dollar', 'dollars'
+  ];
   
   const hasConversionWord = words.some(w => conversionKeywords.includes(w));
   const hasUnitWord = words.some(w => unitKeywords.some(unit => w.includes(unit)));
 
   if (hasConversionWord || hasUnitWord) {
-    return "I only convert temperatures using the tabs below. Typing full sentences here is beyond my pay grade.";
+    return "I only convert Celsius, Fahrenheit, and Kelvin. Trying to convert other units here is like asking a fish to climb a tree. I have boundaries, you know.";
   }
 
-  // 4. Default fallback for general invalid strings (like "abc")
+  // 3. Default fallback for general invalid strings (like "abc")
   return "Please enter a valid number. Alphabet soup does not have a boiling point.";
 }
 
