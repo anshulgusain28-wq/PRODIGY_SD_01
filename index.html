@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Temperature Converter | TempConvert</title>
+  <meta name="description" content="Instantly convert between Celsius, Fahrenheit and Kelvin. Includes formulas, scale history, and real-world reference points." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Top Navbar -->
+  <header class="navbar">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <span class="brand-logo">■</span>
+        <span class="brand-name">TempConvert</span>
+      </div>
+      <nav class="nav-links">
+        <a href="#converter" class="nav-link active">Converter</a>
+        <a href="#formulas" class="nav-link">Formulas</a>
+        <a href="#about" class="nav-link">About Scales</a>
+      </nav>
+      <div class="nav-right">
+        Unit Converter
+      </div>
+    </div>
+  </header>
+
+  <main class="main-container">
+    
+    <!-- Hero Header -->
+    <section class="hero-section">
+      <div class="hero-left">
+        <h1 class="hero-title">Temperature Converter</h1>
+        <p class="hero-subtitle">
+          Instantly convert between Celsius, Fahrenheit and Kelvin. Includes formulas, scale history, and real-world reference points.
+        </p>
+      </div>
+      <div class="hero-right">
+        <div class="mini-scale-card" onclick="selectFromScale('celsius')">
+          <span class="mini-symbol">°C</span>
+          <span class="mini-label">Celsius</span>
+        </div>
+        <div class="mini-scale-card" onclick="selectFromScale('fahrenheit')">
+          <span class="mini-symbol">°F</span>
+          <span class="mini-label">Fahrenheit</span>
+        </div>
+        <div class="mini-scale-card" onclick="selectFromScale('kelvin')">
+          <span class="mini-symbol">K</span>
+          <span class="mini-label">Kelvin</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Converter Section -->
+    <section id="converter" class="converter-layout">
+      
+      <!-- Main Converter Column -->
+      <div class="converter-main">
+        <div class="card panel-input">
+          <label class="field-label" for="temp-input">Enter temperature</label>
+          <div class="input-row">
+            <div class="input-field-wrapper">
+              <input 
+                type="number" 
+                id="temp-input" 
+                value="100" 
+                placeholder="0"
+                step="any"
+                autocomplete="off"
+              />
+              <span class="input-unit-symbol" id="input-unit-badge">°C</span>
+            </div>
+            <div class="spinner-buttons">
+              <button class="spinner-btn up" onclick="stepInput(1)" aria-label="Increment temperature">▲</button>
+              <button class="spinner-btn down" onclick="stepInput(-1)" aria-label="Decrement temperature">▼</button>
+            </div>
+          </div>
+          <span class="error-msg" id="error-msg" role="alert" aria-live="polite"></span>
+          
+          <div class="unit-selectors-grid">
+            <div class="selector-group">
+              <label class="field-label">From Unit</label>
+              <div class="scale-tabs from-tabs">
+                <button class="tab-btn active" id="tab-from-celsius" onclick="selectFromScale('celsius')">Celsius</button>
+                <button class="tab-btn" id="tab-from-fahrenheit" onclick="selectFromScale('fahrenheit')">Fahrenheit</button>
+                <button class="tab-btn" id="tab-from-kelvin" onclick="selectFromScale('kelvin')">Kelvin</button>
+              </div>
+            </div>
+            
+            <div class="selector-group">
+              <label class="field-label">Convert To</label>
+              <div class="scale-tabs to-tabs">
+                <button class="tab-btn" id="tab-to-celsius" onclick="selectToScale('celsius')">Celsius</button>
+                <button class="tab-btn active" id="tab-to-fahrenheit" onclick="selectToScale('fahrenheit')">Fahrenheit</button>
+                <button class="tab-btn" id="tab-to-kelvin" onclick="selectToScale('kelvin')">Kelvin</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="divider-arrow">
+          <span>⇅</span>
+        </div>
+
+        <!-- Output Cards -->
+        <div class="outputs-container">
+          <div class="card result-card active" id="result-card">
+            <div class="result-header">
+              <span class="result-label" id="result-label">Fahrenheit</span>
+            </div>
+            <div class="result-value-row">
+              <span class="result-value" id="result-val">212</span>
+              <span class="result-symbol" id="result-symbol">°F</span>
+            </div>
+            <div class="formula-display" id="formula-display">
+              Formula: (100°C × 9/5) + 32 = 212°F
+            </div>
+          </div>
+        </div>
+
+        <!-- Presets -->
+        <div class="presets-section">
+          <span class="section-micro-label">Quick Presets</span>
+          <div class="presets-grid">
+            <button class="preset-btn" onclick="applyPreset(0)">
+              <span class="preset-name">Freezing</span>
+              <span class="preset-value">0°C</span>
+            </button>
+            <button class="preset-btn" onclick="applyPreset(37)">
+              <span class="preset-name">Body Temp</span>
+              <span class="preset-value">37°C</span>
+            </button>
+            <button class="preset-btn" onclick="applyPreset(100)">
+              <span class="preset-name">Boiling</span>
+              <span class="preset-value">100°C</span>
+            </button>
+            <button class="preset-btn" onclick="applyPreset(-273.15)">
+              <span class="preset-name">Absolute Zero</span>
+              <span class="preset-value">-273.15°C</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Reference Column -->
+      <aside class="converter-aside">
+        <div class="card aside-panel">
+          <span class="section-micro-label">Reference Temperatures</span>
+          <ul class="reference-list">
+            <li class="ref-item">
+              <span class="ref-icon">🔥</span>
+              <div class="ref-details">
+                <span class="ref-title">Sun surface</span>
+                <span class="ref-value">5,505 °C</span>
+                <span class="ref-sub">9,941 °F / 5,778 K</span>
+              </div>
+            </li>
+            <li class="ref-item">
+              <span class="ref-icon">☕</span>
+              <div class="ref-details">
+                <span class="ref-title">Water boils</span>
+                <span class="ref-value">100 °C</span>
+                <span class="ref-sub">212 °F / 373 K</span>
+              </div>
+            </li>
+            <li class="ref-item">
+              <span class="ref-icon">❄️</span>
+              <div class="ref-details">
+                <span class="ref-title">Water freezes</span>
+                <span class="ref-value">0 °C</span>
+                <span class="ref-sub">32 °F / 273 K</span>
+              </div>
+            </li>
+            <li class="ref-item">
+              <span class="ref-icon">⚛️</span>
+              <div class="ref-details">
+                <span class="ref-title">Absolute zero</span>
+                <span class="ref-value">-273.15 °C</span>
+                <span class="ref-sub">-459.67 °F / 0 K</span>
+              </div>
+            </li>
+          </ul>
+
+          <div class="quick-tip-card">
+            <span class="tip-title">💡 Quick Tip</span>
+            <p class="tip-desc">
+              Human body temperature is 37°C (98.6°F). Use this as a mental anchor when estimating everyday temperatures.
+            </p>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <!-- Formulas Section -->
+    <section id="formulas" class="info-section">
+      <h2 class="section-title">Conversion Formulas</h2>
+      <div class="formulas-grid">
+        <div class="card formula-card">
+          <span class="formula-label">Celsius → Fahrenheit</span>
+          <div class="formula-box">
+            <code>(°C × 9/5) + 32</code>
+          </div>
+          <span class="formula-example">e.g. 100°C ➔ 212°F</span>
+        </div>
+
+        <div class="card formula-card">
+          <span class="formula-label">Fahrenheit → Celsius</span>
+          <div class="formula-box">
+            <code>(°F − 32) × 5/9</code>
+          </div>
+          <span class="formula-example">e.g. 98.6°F ➔ 37°C</span>
+        </div>
+
+        <div class="card formula-card">
+          <span class="formula-label">Celsius → Kelvin</span>
+          <div class="formula-box">
+            <code>°C + 273.15</code>
+          </div>
+          <span class="formula-example">e.g. 0°C ➔ 273.15 K</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- About Scales Section -->
+    <section id="about" class="info-section">
+      <h2 class="section-title">About the Scales</h2>
+      <div class="scales-grid">
+        <div class="card scale-desc-card">
+          <div class="scale-icon-box">■</div>
+          <h3 class="scale-name">Celsius <span class="scale-symbol">°C</span></h3>
+          <p class="scale-desc">
+            The most widely used scale globally. Based on the freezing (0°) and boiling (100°) points of water at standard pressure.
+          </p>
+          <span class="scale-author">Proposed by Anders Celsius in 1742.</span>
+        </div>
+
+        <div class="card scale-desc-card">
+          <div class="scale-icon-box">■</div>
+          <h3 class="scale-name">Fahrenheit <span class="scale-symbol">°F</span></h3>
+          <p class="scale-desc">
+            Primarily used in the United States. Water freezes at 32° and boils at 212° on this scale.
+          </p>
+          <span class="scale-author">Introduced by Daniel Gabriel Fahrenheit in 1724.</span>
+        </div>
+
+        <div class="card scale-desc-card">
+          <div class="scale-icon-box">■</div>
+          <h3 class="scale-name">Kelvin <span class="scale-symbol">K</span></h3>
+          <p class="scale-desc">
+            The SI base unit of temperature. Starts at absolute zero — the coldest theoretically possible temperature.
+          </p>
+          <span class="scale-author">Defined by Lord Kelvin (William Thomson) in 1848.</span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <div class="footer-container">
+      <div class="footer-left">
+        <span class="footer-logo">■</span>
+        <span>TempConvert — Simple &amp; accurate unit conversion</span>
+      </div>
+      <div class="footer-right">
+        <span>✓ Mathematically precise</span>
+        <span>🌐 All major scales supported</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
